@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 @Slf4j
 public class FromJsonService {
 
-
     public Object toObject(String json, Class<?> clazz) {
         Map<String, String> jsonMap = executeMapOfFieldsNameAndValue(json);
         Object object = getNewInstanceOfConstructor(clazz);
@@ -63,12 +62,18 @@ public class FromJsonService {
 
     private Map<String, String> executeMapOfFieldsNameAndValue(String json) {
         return getParsedJsonByPattern(json).stream()
-                .map(s -> s.replace("\"", ""))
                 .map(s -> s.endsWith(",") ? s.substring(0, s.length() - 1) : s)
                 .map(s -> s.split(":", 2))
                 .collect(Collectors.toMap(
-                        strings -> strings[0],
-                        strings -> strings[1],
+                        strings -> strings[0].replaceAll("^\"|\"$", ""),
+                        strings -> {
+                            String value = strings[1];
+                            if (value.startsWith("{") && value.endsWith("}")) {
+                                return value; // Сохраняем кавычки внутри объектов
+                            } else {
+                                return value.replaceAll("^\"|\"$", "");
+                            }
+                        },
                         (v1, v2) -> v2,
                         LinkedHashMap::new
                 ));
@@ -78,7 +83,7 @@ public class FromJsonService {
         List<String> keyValueList = new ArrayList<>();
         Pattern pattern = Pattern
                 .compile("((?=\\[)\\[[^]]*]|(?=\\{)\\{[^}]*}|\"[^\"]*\"|(?=\\d)\\d*.\\d*|(?=\\w)\\w*|(?=\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b))" +
-                        ":+((?=\\[)\\[[^]]*]|(?=\\{)\\{[^}]*}|\"[^\"]*\"|(?=\\d)\\d*.\\d*|(?=\\w)\\w*|(?=\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b))");
+                        ":+((?=\\[)\\[[^]]*]|(?=\\{)\\{[^}]*}|\"[^\"]*\"|(?=\\d)\\d*.\\d*|(?=\\w)\\w*|(?=\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b|(?=\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b)))");
         Matcher matcher = pattern.matcher(json);
         while (matcher.find()) {
             keyValueList.add(matcher.group());
@@ -153,7 +158,7 @@ public class FromJsonService {
         };
     }
 
-    private LinkedHashMap<Object, String> getParsedMap(String value, Field declaredField) {
+    private LinkedHashMap<Object, Integer> getParsedMap(String value, Field declaredField) {
         return value.lines()
                 .map(s -> s.replace("{", ""))
                 .map(s -> s.replace("}", ""))
@@ -161,8 +166,8 @@ public class FromJsonService {
                 .flatMap(Arrays::stream)
                 .map(s -> s.split(":"))
                 .collect(Collectors.toMap(
-                        strings -> getParsedGeneric(declaredField, strings[0]),
-                        strings -> strings[1],
+                        strings -> getParsedGeneric(declaredField, strings[0].replaceAll("^\"|\"$", "")),
+                        strings -> Integer.parseInt(strings[1].replaceAll("^\"|\"$", "")),
                         (v1, v2) -> v2,
                         LinkedHashMap::new
                 ));
@@ -181,22 +186,12 @@ public class FromJsonService {
     }
 
     private Stream<Object> getParsedCollectionStream(String value, Field declaredField) {
-        return value.lines()
-                .map(s -> s.replace("[", ""))
-                .map(s -> s.replace("]", ""))
-                .map(s -> {
-                    if (s.startsWith("{")) {
-                        return s.split("(?<=\\}),(?=\\{)");
-                    } else {
-                        return s.split(",");
-                    }
-                })
-                .flatMap(Arrays::stream)
+        return Arrays.stream(value.split("(?<=}),\\s*(?=\\{)"))
+                .map(s -> s.replace("[", "").replace("]", ""))
                 .map(s -> getParsedGeneric(declaredField, s));
     }
 
     private Object getParsedGeneric(Field declaredField, String s) {
-
         if (declaredField.getGenericType() instanceof ParameterizedType type) {
             Class<?> generic = (Class<?>) type.getActualTypeArguments()[0];
             if (Number.class.isAssignableFrom(generic)) {

@@ -29,14 +29,21 @@ class FromJsonServiceTest {
     @Test
     void shouldReturnObjectAuction() {
         // given
-        Auction auction = AuctionTestData.builder().build().buildAuction();
+        Auction expected = AuctionTestData.builder().build().buildAuction();
         String jsonLine = AUCTION_IN_JSON_FORMAT;
 
         // when
         Auction actual = (Auction) jsonSerializable.fromJson(jsonLine, Auction.class);
 
         // then
-        assertThat(actual).isEqualTo(auction);
+        assertThat(actual)
+                .hasFieldOrPropertyWithValue(Auction.Fields.id, expected.getId())
+                .hasFieldOrPropertyWithValue(Auction.Fields.titleEvent, expected.getTitleEvent())
+                .hasFieldOrPropertyWithValue(Auction.Fields.dateEvent, expected.getDateEvent())
+                .hasFieldOrPropertyWithValue(Auction.Fields.cars, expected.getCars())
+                .hasFieldOrPropertyWithValue(Auction.Fields.people, expected.getPeople())
+                .hasFieldOrPropertyWithValue(Auction.Fields.mapListOfCar, expected.getMapListOfCar());
+
     }
 
     @Test

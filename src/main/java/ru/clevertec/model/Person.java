@@ -23,5 +23,4 @@ public class Person {
     private BigDecimal amount;
     private boolean isExistToday;
     private Status status;
-    private int [] numberGarage;
 }

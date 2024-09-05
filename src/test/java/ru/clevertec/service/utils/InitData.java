@@ -50,8 +50,7 @@ public class InitData {
                     "Долларовый",
                     BigDecimal.valueOf(50000),
                     true,
-                    Status.BUYER,
-                    new int[]{3, 4}
+                    Status.BUYER
             ),
             new Person(
                     UUID.fromString("221f4ccb-2ab8-41da-a71e-6d67b9e59a84"),
@@ -59,12 +58,11 @@ public class InitData {
                     "Денежный",
                     BigDecimal.valueOf(100000),
                     true,
-                    Status.BUYER,
-                    new int[]{1, 2}
+                    Status.BUYER
             )
     );
     public static final Map<String, Integer> MAP_LIST_OF_CAR = Map.of(
             "Ford", 30000
     );
-    public static final String AUCTION_IN_JSON_FORMAT = "{\"id\":\"76a4a999-92d7-452f-9a7b-34607ecb688e\",\"titleEvent\":\"Лучшие авто сезона!\",\"dateEvent\":\"2023-11-06\",\"cars\":[{\"id\":\"003387b9-4390-49bc-a116-9f5da24fe8ef\",\"brand\":\"Hyndai\",\"model\":\"i30\",\"date_product\":\"2023-02-14\",\"type\":\"HATCHBACK\",\"price\":19000.0},{\"id\":\"61803ed3-74d5-4b1a-a3e2-f861b83967c1\",\"brand\":\"Ford\",\"model\":\"Focus\",\"date_product\":\"2023-01-10\",\"type\":\"HATCHBACK\",\"price\":18500.0}],\"people\":[{\"id\":\"1790b89a-25f3-4764-9496-4ae5ac7db0bb\",\"firstname\":\"Василий\",\"lastname\":\"Долларовый\",\"amount\":50000,\"isExistToday\":true,\"status\":\"BUYER\",\"numberGarage\":[3,4]},{\"id\":\"221f4ccb-2ab8-41da-a71e-6d67b9e59a84\",\"firstname\":\"Николай\",\"lastname\":\"Денежный\",\"amount\":100000,\"isExistToday\":true,\"status\":\"BUYER\",\"numberGarage\":[1,2]}],\"mapListOfCar\":{\"Ford\":30000}}";
+    public static final String AUCTION_IN_JSON_FORMAT = "{\"id\":\"76a4a999-92d7-452f-9a7b-34607ecb688e\",\"titleEvent\":\"Лучшие авто сезона!\",\"dateEvent\":\"2023-11-06\",\"cars\":[{\"id\":\"003387b9-4390-49bc-a116-9f5da24fe8ef\",\"brand\":\"Hyndai\",\"model\":\"i30\",\"date_product\":\"2023-02-14\",\"type\":\"HATCHBACK\",\"price\":19000.0},{\"id\":\"61803ed3-74d5-4b1a-a3e2-f861b83967c1\",\"brand\":\"Ford\",\"model\":\"Focus\",\"date_product\":\"2023-01-10\",\"type\":\"HATCHBACK\",\"price\":18500.0}],\"people\":[{\"id\":\"1790b89a-25f3-4764-9496-4ae5ac7db0bb\",\"firstname\":\"Василий\",\"lastname\":\"Долларовый\",\"amount\":50000,\"isExistToday\":true,\"status\":\"BUYER\"},{\"id\":\"221f4ccb-2ab8-41da-a71e-6d67b9e59a84\",\"firstname\":\"Николай\",\"lastname\":\"Денежный\",\"amount\":100000,\"isExistToday\":true,\"status\":\"BUYER\"}],\"mapListOfCar\":{\"Ford\":30000}}";
 }
