@@ -69,7 +69,7 @@ public class FromJsonService {
                         strings -> {
                             String value = strings[1];
                             if (value.startsWith("{") && value.endsWith("}")) {
-                                return value; // Сохраняем кавычки внутри объектов
+                                return value;
                             } else {
                                 return value.replaceAll("^\"|\"$", "");
                             }

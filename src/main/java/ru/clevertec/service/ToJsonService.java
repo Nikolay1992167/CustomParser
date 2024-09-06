@@ -39,11 +39,9 @@ public class ToJsonService {
                             && !(entry.getValue() instanceof Enum)) {
                         return jsonBuilder.append("\"%s\":%s,".formatted(entry.getKey(), toJson(entry.getValue())));
                     }
-
                     return jsonBuilder.append("\"%s\":\"%s\"," .formatted(entry.getKey(), entry.getValue()));
                 })
                 .collect(Collectors.joining("", "{", "}"));
-
         String finalJson = removeLastComma(json);
         log.info("toJson:\n{}", finalJson);
         return finalJson;
@@ -115,7 +113,6 @@ public class ToJsonService {
             Object o = Array.get(value, i);
             objects[i] = o;
         }
-
         return Arrays.stream(objects)
                 .map(o -> {
                     if (isObjectInstanceOfStringOrNumberOrBooleanOrEnum(o)) {
